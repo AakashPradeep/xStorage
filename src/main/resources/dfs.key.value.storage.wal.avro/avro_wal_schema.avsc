@@ -1,0 +1,25 @@
+{
+    "type" : "record",
+    "name" : "WalRecordInfo",
+    "namespace" : "org.embedded.dfs.key.value.storage.wal.api.avro.impl",
+    "fields" : [{"name" : "sequenceId",
+                "type" : "long"},
+
+                {"name" : "timestamp",
+                "type" : "long"},
+
+                {"name" : "key",
+                "type" : "bytes"},
+
+
+                {"name" : "value",
+                "type" : "bytes"},
+
+                 {"name":"operation",
+                 "type":{
+                    "name":"operation",
+                    "type":"enum",
+                    "symbols":["DELETE","PUT"]
+                    }
+                 }]
+}
