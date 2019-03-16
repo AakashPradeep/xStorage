@@ -45,6 +45,8 @@ Data in persistence layer is organized in different levels, generally max level 
         Assert.assertThat(connection.get(key), is(value));
     }
 ```
+# License 
+This project is licensed under [The GPL License]https://en.wikipedia.org/wiki/GNU_General_Public_License
 
 # Authors
 Aakash Pradeep (email2aakash@gmail.com)
