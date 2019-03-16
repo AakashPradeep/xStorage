@@ -1,7 +1,7 @@
 
 
 # xStorage : An Introduction
-An embedded key value storage system with reliable distributed persistence. Current implementation uses HDFS as distributed persistence but idea is to use any distributed filesystem or object storage like S3 or GCS and it should be pluggable for each storage. Since its embedded, there can be only one client application which can read and write from the storage system with strong consistency but since persistence is distributed, client can move to different hosts as long as persisted data is accessible.
+An **embedded key value storage system with reliable distributed persistence**. Current implementation uses HDFS as distributed persistence but idea is to use any distributed filesystem or object storage like S3 or GCS and it should be pluggable for each storage. Since its embedded, there can be only one client application which can read and write from the storage system with strong consistency but since persistence is distributed, client can move to different hosts as long as persisted data is accessible.
 
 The design of xStorgae system is highly influenced from [Level DB](https://github.com/google/leveldb) and [Rocks DB](https://rocksdb.org/). It uses LSM to provide high write performance and reliability, and it will be regularaly flushed to disk (persistence layer) based on size and time. 
 
