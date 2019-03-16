@@ -28,7 +28,7 @@ Data in persistence layer is organized in different levels, generally max level 
 * Global Index to make search fast so that search across multiple level can be avoided.
 * Support Snapshot
 
-# where I can be used 
+# Where I can be used 
 * As a DB for [YARN Resource Manager](https://hortonworks.com/blog/apache-hadoop-yarn-resourcemanager/) 
 * As a DB for [Job History Server](https://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/HistoryServerRest.html)    
 * It can be used with any application (app server or web server) to persist its state for example a typical use would be to use with an application running as docker container to persist any local scope data. As docker container is ephemeral in nature, it can go down and restart on any node in cloud, storage system like **xStorage** can help it maintain highly consistent state/business data and make the system highly reliable and available.
