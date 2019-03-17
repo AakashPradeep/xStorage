@@ -27,7 +27,7 @@ Data in persistence layer is organized in different levels, generally max level 
 * Support range scan
 * Global Index to make search fast so that search across multiple level can be avoided.
 * Support Snapshot
-* Addition of transaction for Compacation
+* Addition of transaction for Compaction
 
 # Where I can be used 
 * As a DB for [YARN Resource Manager](https://hortonworks.com/blog/apache-hadoop-yarn-resourcemanager/) 
