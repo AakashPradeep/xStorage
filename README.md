@@ -61,6 +61,8 @@ try (Connection connection = ConnectionManager.getInstance().getConnection(stora
     connection.put(key, value);
     Assert.assertThat(connection.get(key), is(value));
 }
+```
+
 
 ## License
 
