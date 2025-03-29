@@ -1,57 +1,82 @@
+# xStorage
 
+**xStorage** is a high-performance, embedded key-value storage system with **pluggable distributed persistence**. It is designed to work seamlessly with distributed filesystems such as **HDFS**, **Amazon S3**, and **Google Cloud Storage (GCS)**, allowing applications to decouple storage from compute while maintaining strong consistency and fault tolerance.
 
-# xStorage : An Introduction
-An **embedded key value storage system with reliable distributed persistence**. Current implementation uses HDFS as distributed persistence but idea is to use any distributed filesystem or object storage like S3 or GCS and it should be pluggable for each storage. Since its embedded, there can be only one client application which can read and write from the storage system with strong consistency. Since persistence is distributed, client can move to different hosts as long as persisted data is accessible.
+Unlike traditional embedded storage engines, xStorage allows a single client to write and read data across hosts, as long as the underlying distributed storage is accessible — making it ideal for ephemeral environments like containers or cloud-native applications.
 
-The design of xStorgae system is highly influenced from [Level DB](https://github.com/google/leveldb) and [Rocks DB](https://rocksdb.org/). It uses [LSM](https://en.wikipedia.org/wiki/Log-structured_merge-tree) to provide high write performance and reliability, and it will be regularaly flushed to disk (persistence layer) based on size and time. 
+---
 
-Data in persistence layer is organized in different levels, generally max level is 7, for following purposes:
+## 🚀 Key Features
 
-* minimize the number of files which also reduces the amount of lookup.
-* data get promoted from one level to the next i.e. from Level 0 to Level1 using Compaction concept, which also helps in reducing the data footprint. 
-* Data in persistence layer is immutable and if a key is intended to be deleted then its another entry in storage which is handled during Compaction based on other action and its timeline. 
-* Level also indicates timeline for a key, key in lower level is recent than higher level. This feature is used for key lookup. 
+- 🔐 **Embedded & Consistent**: One client instance at a time ensures strong consistency.
+- 🌐 **Distributed Persistence**: Supports HDFS and is pluggable for other storages like S3 or GCS.
+- 🗃️ **Namespace Isolation**: Multiple logical clients can share the same storage backend via namespaces.
+- 📦 **LSM-based Design**: Inspired by [LevelDB](https://github.com/google/leveldb) and [RocksDB](https://rocksdb.org/), optimized for write-heavy workloads.
+- 🔁 **Data Compaction**: Multi-level compaction reduces footprint and improves lookup performance.
+- 📄 **Sorted Storage**: Keys are stored in sorted order with automatic compression.
+- 💾 **Host-Agnostic**: Data is not tied to local filesystem, enabling clients to move freely across hosts.
+- 🔄 **Basic Operations**: `Put(key, value)`, `Get(key)`, `Delete(key)`
 
-# Features
-* Keys and values are arbitrary byte arrays.
-* Data is stored sorted by key.
-* The basic operations are Put(key,value), Get(key), Delete(key)
-* Data is automatically compressed
-* Highly reliable as persistence layer is distributed in nature
-* As data is not stored on local filesystem, Client application is not limited to a single host rather it can be instantiated on any host as long data is accessible. 
-* It supports namespace, so same persistence layer can be used with different clients.
+---
 
-# Desired feature
-* Pluggable persistence layer like S3, [GCS](https://cloud.google.com/storage/getting-started/) for each storage/namespace
-* SST or HFile like implementation for storage instead of  HDFS Bloom file and this should be pluggable for each storage/namespace
-* Support range scan
-* Global Index to make search fast so that search across multiple level can be avoided.
-* Support Snapshot
-* Addition of transaction for Compaction
+## 🧠 How It Works
 
-# Where I can be used 
-* As a DB for [YARN Resource Manager](https://hortonworks.com/blog/apache-hadoop-yarn-resourcemanager/) 
-* As a DB for [Job History Server](https://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/HistoryServerRest.html)    
-* It can be used with any application (app server or web server) to persist its state for example a typical use would be to use with an application running as docker container to persist any local scope data. As docker container is ephemeral in nature, it can go down and restart on any node in cloud, storage system like **xStorage** can help it maintain highly consistent state/business data and make the system highly reliable and available.
+- Uses **Log-Structured Merge Trees (LSM)** to optimize for write-heavy operations.
+- Data is flushed from memory to the persistence layer periodically based on size and time thresholds.
+- Organizes data in **levels (0–7)** with promotion and compaction strategies to reduce lookup time and stale data.
+- Deletions are handled via *tombstones*, and physical removal happens during compaction.
+- Lower levels contain more recent data, which helps with efficient lookups.
 
+---
 
-# How to use: an example
-```Java
-    final Storage storage = new Storage(Namespace.from("com.aakash"), StorageName.from("test"));
-    final Configuration configuration = new Configuration();
-    try (Connection connection = ConnectionManager.getInstance().getConnection(storage, configuration)) {
-        byte[] value = "world".getBytes();
-        byte[] key = "hello".getBytes();
-        connection.put(key, value);
-        Assert.assertThat(connection.get(key), is(value));
-    }
-```
-# License 
-This project is licensed under [The GPL License](https://en.wikipedia.org/wiki/GNU_General_Public_License)
+## 🌟 Desired Enhancements
 
-# Authors
-Aakash Pradeep (email2aakash@gmail.com)
+- ✅ Pluggable storage backend: S3, GCS, Azure Blob
+- ✅ SST or HFile-like format support
+- ✅ Range scan capability
+- ✅ Global indexing for faster multi-level search
+- ✅ Snapshot support
+- ✅ Transactions for compaction
 
-# topics
-storage, embedded, docker and emphemeral compute
+---
 
+## 📦 Real-World Use Cases
+
+- 🔹 As a metadata DB for [YARN ResourceManager](https://hortonworks.com/blog/apache-hadoop-yarn-resourcemanager/)
+- 🔹 State store for [Job History Server](https://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/HistoryServerRest.html)
+- 🔹 Reliable storage for ephemeral compute environments like Docker containers
+- 🔹 Durable local state management for app or web servers running in distributed cloud environments
+
+---
+
+## 💡 Example Usage (Java)
+
+```java
+final Storage storage = new Storage(Namespace.from("com.aakash"), StorageName.from("test"));
+final Configuration configuration = new Configuration();
+
+try (Connection connection = ConnectionManager.getInstance().getConnection(storage, configuration)) {
+    byte[] value = "world".getBytes();
+    byte[] key = "hello".getBytes();
+    connection.put(key, value);
+    Assert.assertThat(connection.get(key), is(value));
+}
+
+## License
+
+This project is licensed under the GNU General Public License (GPL).
+
+## Author
+
+Aakash Pradeep
+📧 email2aakash@gmail.com
+
+## Topics
+
+java, key-value store, distributed storage, embedded database, LSM, docker, ephemeral compute, persistent storage, HDFS, S3, GCS
+
+## Support & Contribution
+
+If you find this project interesting, please ⭐️ star the repo to show your support!
+
+Contributions and feedback are welcome — open an issue or pull request to get involved.
