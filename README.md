@@ -51,3 +51,7 @@ This project is licensed under [The GPL License](https://en.wikipedia.org/wiki/G
 
 # Authors
 Aakash Pradeep (email2aakash@gmail.com)
+
+# topics
+storage, embedded, docker and emphemeral compute
+
